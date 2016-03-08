@@ -26,9 +26,6 @@ import com.example.envylan.campusassitentandroidclient.fragment.curriculumCheckF
 import com.example.envylan.campusassitentandroidclient.fragment.gradeCheckFragment;
 import com.example.envylan.campusassitentandroidclient.fragment.indexFragment;
 
-;
-
-
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
@@ -42,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mToolbar = (Toolbar)findViewById(R.id.tl_custom);
-        mToolbar.setTitle("Toolbar");//����Toolbar����
-        mToolbar.setTitleTextColor(Color.parseColor("#ffffff")); //���ñ�����ɫ
+        mToolbar.setTitle("Toolbar");
+        mToolbar.setTitleTextColor(Color.parseColor("#ffffff"));
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -77,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, values);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new drawerItemClickListener());
