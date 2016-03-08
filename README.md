@@ -1,0 +1,2 @@
+# CampusAssitentAndroidClient
+校园助手APP安卓客户端
