@@ -38,7 +38,7 @@ import me.drakeet.materialdialog.MaterialDialog;
 /**
  * Created by EnvyLan on 2016/3/7 0007.
  */
-public class accountDetailActivity extends Activity {
+public class accountJWXTActivity extends Activity {
 
     private Toolbar mToolbar;
     private Button mButton;
@@ -70,7 +70,7 @@ public class accountDetailActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (mIdEt.getText().equals("") || mPwdEt.getText().equals("")) {
-                    Toast.makeText(accountDetailActivity.this, "学号和密码不能为空", Toast.LENGTH_LONG)
+                    Toast.makeText(accountJWXTActivity.this, "学号和密码不能为空", Toast.LENGTH_LONG)
                             .show();
                 } else {
                     showMeterialDialog();
@@ -80,8 +80,8 @@ public class accountDetailActivity extends Activity {
    }
 
     private void showMeterialDialog() {
-        meterialDialog = new MaterialDialog(accountDetailActivity.this );
-        View view = LayoutInflater.from(accountDetailActivity.this)
+        meterialDialog = new MaterialDialog(accountJWXTActivity.this );
+        View view = LayoutInflater.from(accountJWXTActivity.this)
                 .inflate(R.layout.dialog_item, null);
         imageView = (ImageView) view.findViewById(R.id.checkcode_im);
         getCheckCode();
@@ -92,7 +92,7 @@ public class accountDetailActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         if (et.getText().equals("")) {
-                            Toast.makeText(accountDetailActivity.this, "验证码不能为空", Toast.LENGTH_LONG)
+                            Toast.makeText(accountJWXTActivity.this, "验证码不能为空", Toast.LENGTH_LONG)
                                     .show();
                         } else {
                             sendStuIdAndPwd(mIdEt.getText().toString(), mPwdEt.getText().toString(), et.getText().toString());

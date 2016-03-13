@@ -23,15 +23,15 @@
 
         <ImageView
             android:id="@+id/checkcode_im"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             />
 
         <EditText
             android:id="@+id/checkcode_text"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>

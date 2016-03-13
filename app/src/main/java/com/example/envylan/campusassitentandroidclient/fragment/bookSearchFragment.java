@@ -7,8 +7,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.example.envylan.campusassitentandroidclient.R;
 
@@ -48,6 +50,7 @@ public class bookSearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.book_search, null);
+        final ProgressBar bar = (ProgressBar) v.findViewById(R.id.myProgressBar);
         mWebView = (WebView) v.findViewById(R.id.book_search_webview);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new WebViewClient() {
@@ -57,7 +60,21 @@ public class bookSearchFragment extends Fragment {
                 return true;
             }
         });
-        mWebView.loadUrl("http://m.5read.com/5613?backurl=http%3A%2F%2Fmc.m.5read.com%2Fweixin%2FuserBind1_viewForwordCookie.jspx%3FrealUrl%3Dhttp%253A%252F%252Fms.zucc.edu.cn%253A8080%252Fsms%252Fopac%252Fsearch%252FshowiphoneSearch.action%26ubId%3D23620");
+        mWebView.setWebChromeClient(new WebChromeClient(){
+
+            public void onProgressChanged(WebView view, int progress){
+                if (progress == 100) {
+                    bar.setVisibility(View.INVISIBLE);
+                } else {
+                    if (View.INVISIBLE == bar.getVisibility()) {
+                        bar.setVisibility(View.VISIBLE);
+                    }
+                    bar.setProgress(progress);
+                }
+                super.onProgressChanged(view, progress);
+            }
+        });
+        mWebView.loadUrl("http://ms.zucc.edu.cn:8080/sms/opac/search/showiphoneSearch.action");
         mWebView.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {

@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.envylan.campusassitentandroidclient.R;
-import com.example.envylan.campusassitentandroidclient.activity.accountDetailActivity;
+import com.example.envylan.campusassitentandroidclient.activity.accountJWXTActivity;
 
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         personViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context,accountDetailActivity.class);
+                Intent intent=new Intent(context,accountJWXTActivity.class);
                 intent.putExtra("News",newses.get(j));
                 context.startActivity(intent);
             }
@@ -96,7 +96,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         personViewHolder.readMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context,accountDetailActivity.class);
+                Intent intent=new Intent(context,accountJWXTActivity.class);
                 intent.putExtra("News",newses.get(j));
                 context.startActivity(intent);
             }
