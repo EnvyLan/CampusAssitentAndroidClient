@@ -1,6 +1,7 @@
 package com.example.envylan.campusassitentandroidclient.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ import me.drakeet.materialdialog.MaterialDialog;
 /**
  * Created by EnvyLan on 2016/3/7 0007.
  */
-public class accountJWXTActivity extends Activity {
+public class AccountActivity extends Activity {
 
     private Toolbar mToolbar;
     private Button mButton;
@@ -64,13 +65,15 @@ public class accountJWXTActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_detail);
+        Intent intent = getIntent();
         findViewId();
-        mToolbar.setTitle("hello");
+        String type = intent.getStringExtra("type");
+        mToolbar.setTitle(type);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mIdEt.getText().equals("") || mPwdEt.getText().equals("")) {
-                    Toast.makeText(accountJWXTActivity.this, "学号和密码不能为空", Toast.LENGTH_LONG)
+                    Toast.makeText(AccountActivity.this, "学号和密码不能为空", Toast.LENGTH_LONG)
                             .show();
                 } else {
                     showMeterialDialog();
@@ -80,8 +83,8 @@ public class accountJWXTActivity extends Activity {
    }
 
     private void showMeterialDialog() {
-        meterialDialog = new MaterialDialog(accountJWXTActivity.this );
-        View view = LayoutInflater.from(accountJWXTActivity.this)
+        meterialDialog = new MaterialDialog(AccountActivity.this );
+        View view = LayoutInflater.from(AccountActivity.this)
                 .inflate(R.layout.dialog_item, null);
         imageView = (ImageView) view.findViewById(R.id.checkcode_im);
         getCheckCode();
@@ -92,7 +95,7 @@ public class accountJWXTActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         if (et.getText().equals("")) {
-                            Toast.makeText(accountJWXTActivity.this, "验证码不能为空", Toast.LENGTH_LONG)
+                            Toast.makeText(AccountActivity.this, "验证码不能为空", Toast.LENGTH_LONG)
                                     .show();
                         } else {
                             sendStuIdAndPwd(mIdEt.getText().toString(), mPwdEt.getText().toString(), et.getText().toString());

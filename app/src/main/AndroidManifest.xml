@@ -18,11 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.accountJWXTActivity" />
-        <activity
-            android:name=".activity.AccountUniteActivity"
-            android:label="@string/title_activity_account_unite" >
-        </activity>
+        <activity android:name=".activity.AccountActivity" />
     </application>
 
 </manifest>
