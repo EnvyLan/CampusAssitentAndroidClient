@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <com.rengwuxian.materialedittext.MaterialEditText
+    <WebView
+        android:id="@+id/book_lend_webview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Basic"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>

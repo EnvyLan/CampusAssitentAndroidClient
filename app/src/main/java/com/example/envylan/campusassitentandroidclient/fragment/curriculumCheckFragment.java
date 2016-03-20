@@ -1,13 +1,39 @@
 package com.example.envylan.campusassitentandroidclient.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.envylan.campusassitentandroidclient.R;
+import com.example.envylan.campusassitentandroidclient.models.ClassInfo;
+import com.example.envylan.campusassitentandroidclient.views.ScheduleView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /* 
@@ -37,9 +63,72 @@ import com.example.envylan.campusassitentandroidclient.R;
  */
 
 public class curriculumCheckFragment extends Fragment {
+    private List<ClassInfo> classList = new ArrayList<>();
+    private ScheduleView scheduleView;
+    private String TAG = "课表查询";
+    public Handler mhandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Log.d(TAG, "handleMessage is execute");
+            scheduleView.setClassList(classList);
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.curriculum_check, null);
+        View v = inflater.inflate(R.layout.curriculum_check, null);
+        scheduleView = (ScheduleView) v.findViewById(R.id.schedu);
+        checkToken();
+
+        return v;
+    }
+
+    public void checkToken(){
+        SharedPreferences pref = getActivity().getSharedPreferences("jwxt", Context.MODE_PRIVATE);
+        String token = pref.getString("jwxtToken", "token");
+        if (token.equals("-1")){
+            Toast.makeText(getActivity(), "请更新教务系统账户", Toast.LENGTH_LONG)
+                    .show();
+        }else {
+            getCurriculum(token, pref.getString("jwxtStuId", "31207311"));
+        }
+    }
+
+    private void getCurriculum(final String token, final String jwxtStuId) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpPost postRequest = new HttpPost("http://192.168.1.106:5000/api/v1.0/getCurriculum");
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("xnd","2012-2013");
+                    json.put("xqd","2");
+                    json.put("token", token);
+                    json.put("stuId", jwxtStuId);
+                    StringEntity entity = new StringEntity(json.toString(), "utf-8");
+                    HttpClient client = new DefaultHttpClient();
+                    postRequest.setEntity(entity);
+                    HttpResponse reponse = client.execute(postRequest);
+                    HttpEntity entity1 = reponse.getEntity();
+                    String msg = EntityUtils.toString(entity1, "utf-8");
+                    Log.d(TAG, msg);
+                    JSONObject o = new JSONObject(msg);
+                    classList = new Gson().fromJson(o.getString("list"), new TypeToken< List<ClassInfo> >(){}.getType());
+                    Message message = new Message();
+                    mhandler.sendMessage(message);
+                    scheduleView.setClassList(classList);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

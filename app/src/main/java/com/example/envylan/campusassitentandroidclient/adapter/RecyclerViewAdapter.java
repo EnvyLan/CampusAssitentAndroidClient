@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.envylan.campusassitentandroidclient.R;
@@ -24,21 +23,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private List<String> newses;
     private Context context;
-
     public RecyclerViewAdapter(List<String> newses, Context context) {
         this.newses = newses;
         this.context=context;
     }
 
 
-    //自定义ViewHolder类
+    //自定义类
     static class NewsViewHolder extends RecyclerView.ViewHolder{
 
         CardView cardView;
-        ImageView news_photo;
         TextView news_title;
         TextView news_desc;
-        Button share;
         Button readMore;
 
         public NewsViewHolder(final View itemView) {
@@ -76,28 +72,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(context,AccountActivity.class);
-                intent.putExtra("type",newses.get(j));
+                intent.putExtra("type", newses.get(j));
                 context.startActivity(intent);
             }
         });
-
-//        personViewHolder.share.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent=new Intent(Intent.ACTION_SEND);
-//                intent.setType("text/plain");
-//                intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
-//                intent.putExtra(Intent.EXTRA_TEXT, newses.get(j));
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(Intent.createChooser(intent, newses.get(j)));
-//            }
-//        });
 
         personViewHolder.readMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(context,AccountActivity.class);
-                intent.putExtra("News",newses.get(j));
+                intent.putExtra("type", newses.get(j));
                 context.startActivity(intent);
             }
         });
