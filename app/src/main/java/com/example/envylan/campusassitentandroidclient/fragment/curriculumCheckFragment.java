@@ -1,6 +1,5 @@
 package com.example.envylan.campusassitentandroidclient.fragment;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,10 +29,14 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /* 
@@ -79,13 +82,24 @@ public class curriculumCheckFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.curriculum_check, null);
         scheduleView = (ScheduleView) v.findViewById(R.id.schedu);
-        checkToken();
-
+        try {
+            ObjectInputStream in = new ObjectInputStream(getActivity().openFileInput("classList.dat"));
+            classList = (List<ClassInfo>) in.readObject();
+            scheduleView.setClassList(classList);
+            in.close();
+        }catch (FileNotFoundException e){
+            checkToken();
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return v;
     }
 
     public void checkToken(){
-        SharedPreferences pref = getActivity().getSharedPreferences("jwxt", Context.MODE_PRIVATE);
+        SharedPreferences pref = getActivity().getSharedPreferences("jwxt", MODE_PRIVATE);
         String token = pref.getString("jwxtToken", "token");
         if (token.equals("-1")){
             Toast.makeText(getActivity(), "请更新教务系统账户", Toast.LENGTH_LONG)
@@ -113,12 +127,15 @@ public class curriculumCheckFragment extends Fragment {
                     HttpResponse reponse = client.execute(postRequest);
                     HttpEntity entity1 = reponse.getEntity();
                     String msg = EntityUtils.toString(entity1, "utf-8");
-                    Log.d(TAG, msg);
                     JSONObject o = new JSONObject(msg);
-                    classList = new Gson().fromJson(o.getString("list"), new TypeToken< List<ClassInfo> >(){}.getType());
-                    Message message = new Message();
-                    mhandler.sendMessage(message);
-                    scheduleView.setClassList(classList);
+                    if(o.get("status").toString().equals("100")){
+                        Message message = new Message();
+                        classList = new Gson().fromJson(o.getString("list"), new TypeToken< List<ClassInfo> >(){}.getType());
+                        mhandler.sendMessage(message);
+//                        ObjectOutputStream out = new ObjectOutputStream(getActivity().openFileOutput("classList.dat", MODE_PRIVATE));
+//                        out.writeObject(classList);
+//                        out.close();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (ClientProtocolException e) {

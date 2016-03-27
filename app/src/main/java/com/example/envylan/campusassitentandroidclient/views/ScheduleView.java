@@ -53,6 +53,7 @@ public class ScheduleView extends View implements View.OnTouchListener {
 
     public void setClassList(List<ClassInfo> classList){
         this.classList = classList;
+        invalidate();
     }
 
     public ScheduleView(Context context, AttributeSet attrs) {
@@ -70,9 +71,9 @@ public class ScheduleView extends View implements View.OnTouchListener {
         //让主页占据礼拜一到礼拜五的课程，双休日的课程需要滑动
         eachBoxW = (getWidth() - sidewidte) / 5;
         printLeftBar(canvas);
+        printContent(canvas);
         printTopBar(canvas);
         printMarker(canvas);
-        printContent(canvas);
     }
 
     @Override

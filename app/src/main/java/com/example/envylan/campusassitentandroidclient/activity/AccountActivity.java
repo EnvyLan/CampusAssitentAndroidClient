@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -267,6 +268,8 @@ public class AccountActivity extends Activity {
         mIdEt = (EditText) findViewById(R.id.stuId);
         mPwdEt = (EditText) findViewById(R.id.pwd);
         mIdEt.setText("31207311");
+        mIdEt.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mPwdEt.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         mPwdEt.setText("hello123");
 
     }

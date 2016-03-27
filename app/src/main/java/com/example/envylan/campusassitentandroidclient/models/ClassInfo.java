@@ -1,9 +1,11 @@
 package com.example.envylan.campusassitentandroidclient.models;
 
+import java.io.Serializable;
+
 /**
  * Created by EnvyLan on 2016/3/14 0014.
  */
-public class ClassInfo {
+public class ClassInfo implements Serializable {
     private int fromX;
     private int fromY;
     private int toX;
