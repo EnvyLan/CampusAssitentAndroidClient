@@ -55,6 +55,7 @@ public class AccountActivity extends Activity {
     private Bitmap bitmap = null;
     private static final int UPDATE_VIEW = 1;
     private final String TAG = "TAG";
+    private String type;
     private Handler mhandle = new Handler() {
         @Override
         public void handleMessage(Message msg){
@@ -70,6 +71,10 @@ public class AccountActivity extends Activity {
                     Toast.makeText(AccountActivity.this, "登录失败，账号密码错误，或者验证码错误", Toast.LENGTH_LONG)
                             .show();
                     break;
+                case 4:
+                    Toast.makeText(AccountActivity.this, "服务器错误，请稍后再试", Toast.LENGTH_LONG)
+                            .show();
+                    break;
                 default:break;
             }
         }
@@ -81,9 +86,9 @@ public class AccountActivity extends Activity {
         Log.d("accountacticity", "账号管理acticity ");
         setContentView(R.layout.account_detail);
         Intent intent = getIntent();
+        type = intent.getStringExtra("type");
         findViewId();
-        final String typeIntent = intent.getStringExtra("type");
-        mToolbar.setTitle(typeIntent);
+        mToolbar.setTitle(type);
         //mToolbar.setTitleTextColor();
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +97,7 @@ public class AccountActivity extends Activity {
                     Toast.makeText(AccountActivity.this, "学号和密码不能为空", Toast.LENGTH_LONG)
                             .show();
                 } else {
-                    if (typeIntent.equals("教务系统")) {
+                    if (type.equals("教务系统")) {
                         showMeterialDialog();
                     } else {
                         updateUniteAccount();
@@ -107,7 +112,7 @@ public class AccountActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpPost postRequest = new HttpPost("http://192.168.1.106:5000/api/v1.0/virfy_unite_user");
+                HttpPost postRequest = new HttpPost("http://115.159.104.179/api/v1.0/virfy_unite_user");
                 JSONObject myJson = new JSONObject();
                 try {
                     myJson.put("stuId", mIdEt.getText().toString());
@@ -118,8 +123,8 @@ public class AccountActivity extends Activity {
                     HttpResponse reponse = client.execute(postRequest);
                     HttpEntity reponseEntity = reponse.getEntity();
                     String mes = EntityUtils.toString(reponseEntity, "utf-8");
-                    JSONObject js = new JSONObject(mes);
                     Log.d("mes",mes);
+                    JSONObject js = new JSONObject(mes);
                     Log.d("js", js.get("status").toString());
                     Message message = new Message();
                     if(js.get("status").toString().equals("200")){
@@ -144,7 +149,7 @@ public class AccountActivity extends Activity {
         }).start();
     }
 
-    public void updateLocalUniteAccount(String Pwd, String stuId, String recordURL, String token){
+    public void updateLocalUniteAccount(String stuId, String Pwd, String recordURL, String token){
         Log.d(TAG, "updateLocalUniteAccount 开始写入");
         SharedPreferences.Editor editor = getSharedPreferences("uniteAccount", MODE_PRIVATE).edit();
         editor.putString("uniteStuId", stuId);
@@ -183,7 +188,7 @@ public class AccountActivity extends Activity {
             @Override
             public void run() {
                 //URL url = new URL("http://122.235.99.168/api/v1.0/verify_user");
-                HttpPost postRequest = new HttpPost("http://192.168.1.106:5000/api/v1.0/verify_user");
+                HttpPost postRequest = new HttpPost("http://115.159.104.179/api/v1.0/verify_user");
                 JSONObject myJson = new JSONObject();
                 try {
                     myJson.put("stuId", stuId);
@@ -196,12 +201,11 @@ public class AccountActivity extends Activity {
                     HttpResponse reponse = client.execute(postRequest);
                     HttpEntity entity1 = reponse.getEntity();
                     String msg = EntityUtils.toString(entity1, "utf-8");
+                    Log.d("reponsejson", msg);
                     JSONObject reponseJson = new JSONObject(msg);
                     Message message = new Message();
-                    Log.d("reponsejson", msg);
                     if(reponseJson.get("status").toString().equals("100")){
                         updateLocalJWXTAccount(myJson.get("stuId").toString(), myJson.get("Pwd").toString(), reponseJson.get("token").toString(), reponseJson.get("xnd").toString());
-
                         message.what = 2;
                         mhandle.sendMessage(message);
                     }else{
@@ -209,6 +213,7 @@ public class AccountActivity extends Activity {
                         mhandle.sendMessage(message);
                     }
                 } catch (JSONException e) {
+                    //不能转换成json说明服务器出错500
                     e.printStackTrace();
                 }catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -243,7 +248,6 @@ public class AccountActivity extends Activity {
         }).start();
     }
 
-
     public void returnCheckCodeImage(){
         URL myUrl = null;
         try {
@@ -267,10 +271,17 @@ public class AccountActivity extends Activity {
         mButton = (Button) findViewById(R.id.btnUpdate);
         mIdEt = (EditText) findViewById(R.id.stuId);
         mPwdEt = (EditText) findViewById(R.id.pwd);
-        mIdEt.setText("31207311");
         mIdEt.setInputType(InputType.TYPE_CLASS_NUMBER);
         mPwdEt.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        mPwdEt.setText("hello123");
+        if(type.equals("教务系统")){
+            SharedPreferences pref = getSharedPreferences("jwxt", MODE_PRIVATE);
+            mIdEt.setText(pref.getString("jwxtStuId", ""));
+            mPwdEt.setText(pref.getString("jwxtPwd", "") );
+        }else {
+            SharedPreferences pref = getSharedPreferences("uniteAccount", MODE_PRIVATE);
+            mIdEt.setText(pref.getString("uniteStuId", ""));
+            mPwdEt.setText(pref.getString("unitePwd", "") );
+        }
 
     }
 }

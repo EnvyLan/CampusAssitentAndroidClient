@@ -105,7 +105,7 @@ public class curriculumCheckFragment extends Fragment {
             Toast.makeText(getActivity(), "请更新教务系统账户", Toast.LENGTH_LONG)
                     .show();
         }else {
-            getCurriculum(token, pref.getString("jwxtStuId", "31207311"));
+            getCurriculum(token, pref.getString("jwxtStuId", "-1"));
         }
     }
 
@@ -114,10 +114,10 @@ public class curriculumCheckFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpPost postRequest = new HttpPost("http://192.168.1.106:5000/api/v1.0/getCurriculum");
+                HttpPost postRequest = new HttpPost("http://115.159.104.179/api/v1.0/getCurriculum");
                 JSONObject json = new JSONObject();
                 try {
-                    json.put("xnd","2012-2013");
+                    json.put("xnd","2013-2014");
                     json.put("xqd","2");
                     json.put("token", token);
                     json.put("stuId", jwxtStuId);
@@ -132,9 +132,9 @@ public class curriculumCheckFragment extends Fragment {
                         Message message = new Message();
                         classList = new Gson().fromJson(o.getString("list"), new TypeToken< List<ClassInfo> >(){}.getType());
                         mhandler.sendMessage(message);
-//                        ObjectOutputStream out = new ObjectOutputStream(getActivity().openFileOutput("classList.dat", MODE_PRIVATE));
-//                        out.writeObject(classList);
-//                        out.close();
+//                      ObjectOutputStream out = new ObjectOutputStream(getActivity().openFileOutput("classList.dat", MODE_PRIVATE));
+//                      out.writeObject(classList);
+//                      out.close();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

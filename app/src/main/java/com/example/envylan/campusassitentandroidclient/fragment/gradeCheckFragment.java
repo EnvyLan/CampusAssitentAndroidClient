@@ -55,7 +55,7 @@ public class gradeCheckFragment extends Fragment {
         SharedPreferences pref = getActivity().getSharedPreferences("jwxt", Context.MODE_PRIVATE);
         String stuId = pref.getString("jwxtStuId", "31207311");
         String token = pref.getString("jwxtToken", "token");
-        String url = "http://192.168.1.102:5000/api/v1.0/getGradeList";
+        String url = "http://115.159.104.179/api/v1.0/getGradeList";
         final JSONObject postDate = new JSONObject();
         try {
             postDate.put("stuId", stuId);

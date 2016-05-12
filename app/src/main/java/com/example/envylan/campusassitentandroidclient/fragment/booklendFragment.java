@@ -3,8 +3,11 @@ package com.example.envylan.campusassitentandroidclient.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +18,19 @@ import android.widget.Toast;
 
 import com.example.envylan.campusassitentandroidclient.R;
 
-;
+;import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /* 
                    _ooOoo_ 
@@ -46,13 +61,32 @@ import com.example.envylan.campusassitentandroidclient.R;
 public class booklendFragment extends Fragment {
 
     private WebView mWebView;
+    private String url;
+    private Handler mhandle = new Handler() {
+        @Override
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case 1:
+                    mWebView.loadUrl(url);
+                    break;
+                case 2:
+                    Toast.makeText(getActivity(), "服务器错误，请稍后再试", Toast.LENGTH_LONG)
+                            .show();
+                    break;
+                default:break;
+            }
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.book_lend, null);
         SharedPreferences pref = getActivity().getSharedPreferences("uniteAccount", Context.MODE_PRIVATE);
-        String url = pref.getString("recordURL", "-1");
-
+        String stuId = pref.getString("uniteStuId", "-1");
+        String token = pref.getString("uniteToken", "-1");
+        //url = "http://ms.zucc.edu.cn:8080/sms/opac/user/lendStatus.action?xc=3&sn=223B9A1BD48F7D670C57521A003A1BE401D1E0AB0CC6C4C843C442C345F3D32F64718B7D5FB4C4631017B3185E0DC9A510D326E9F49A0D984E6D96422081B572750D74CB32C089EA";
+        getUrl(stuId, token);
         mWebView = (WebView) v.findViewById(R.id.book_lend_webview);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new WebViewClient() {
@@ -62,11 +96,9 @@ public class booklendFragment extends Fragment {
                 return true;
             }
         });
-        if(url.equals("-1")){
+        if(token.equals("-1")){
             Toast.makeText(getActivity(), "请先更新您的统一账户", Toast.LENGTH_LONG)
                     .show();
-        }else {
-            mWebView.loadUrl(url);
         }
         mWebView.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -81,6 +113,49 @@ public class booklendFragment extends Fragment {
             }
         });
         return v;
+    }
+
+    public void getUrl(final String stuId, final String token){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpPost postRequest = new HttpPost("http://115.159.104.179/api/v1.0/getRecordURL");
+                JSONObject myJson = new JSONObject();
+                try {
+                    myJson.put("stuId", stuId);
+                    myJson.put("token", token);
+                    HttpClient client = new DefaultHttpClient();
+                    StringEntity entity = new StringEntity(myJson.toString(), "utf-8");
+                    postRequest.setEntity(entity);
+                    HttpResponse reponse = client.execute(postRequest);
+                    HttpEntity reponseEntity = reponse.getEntity();
+                    String mes = EntityUtils.toString(reponseEntity, "utf-8");
+                    Log.d("mes", mes);
+                    JSONObject js = new JSONObject(mes);
+                    Log.d("js", js.get("status").toString());
+                    Message message = new Message();
+                    if (js.get("status").toString().equals("200")){
+                        url = js.get("recordURL").toString();
+                        message.what = 1;
+                        mhandle.sendMessage(message);
+                    }else {
+                        message.what = 2;
+                        mhandle.sendMessage(message);
+                    }
+                } catch (JSONException e) {
+                    Message message = new Message();
+                    message.what = 2;
+                    mhandle.sendMessage(message);
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
 

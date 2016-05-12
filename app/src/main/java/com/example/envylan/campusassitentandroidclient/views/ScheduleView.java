@@ -70,8 +70,8 @@ public class ScheduleView extends View implements View.OnTouchListener {
         super.onDraw(canvas);
         //让主页占据礼拜一到礼拜五的课程，双休日的课程需要滑动
         eachBoxW = (getWidth() - sidewidte) / 5;
-        printLeftBar(canvas);
         printContent(canvas);
+        printLeftBar(canvas);
         printTopBar(canvas);
         printMarker(canvas);
     }

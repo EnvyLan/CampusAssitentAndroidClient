@@ -2,10 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
+    <!--<TextView
+        android:layout_width="204dp"
+        android:layout_height="wrap_content"
+        android:text="账号余额为："
+        android:id="@+id/textView3" />
     <TextView
         android:layout_width="204dp"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView3" />
+        android:text="186.6"
+        android:id="@+id/textView4" />-->
 </LinearLayout>

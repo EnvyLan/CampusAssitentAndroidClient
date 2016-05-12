@@ -22,12 +22,7 @@
                 android:id="@+id/card_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <!--<ImageView-->
-                    <!--android:id="@+id/news_photo"-->
-                    <!--android:scaleType="centerCrop"-->
-                    <!--android:layout_alignParentTop="true"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="150dp"/>-->
+
                 <TextView
                     android:id="@+id/card_title"
                     android:layout_alignParentBottom="true"
@@ -37,6 +32,7 @@
                     android:padding="5dp"
                     android:textColor="#ffffff"
                     android:gravity="center"
+                    android:background="?attr/colorPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </RelativeLayout>
